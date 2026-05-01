@@ -1,9 +1,17 @@
 # Oh My Posh prompt
-$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
-oh-my-posh init pwsh --config "$HOME\.ohmyposh.omp.json" | Invoke-Expression
+if (-not (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
+    # Refresh PATH in case oh-my-posh was just installed in this session
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" +
+                [System.Environment]::GetEnvironmentVariable("PATH","User")
+}
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    & ([ScriptBlock]::Create((oh-my-posh init pwsh --config "$HOME\.ohmyposh.omp.json")))
+}
 
 # File/folder icons in directory listings
-Import-Module Terminal-Icons
+if (Get-Module -ListAvailable Terminal-Icons -ErrorAction SilentlyContinue) {
+    Import-Module Terminal-Icons
+}
 
 # Predictive IntelliSense (grayed-out history suggestions)
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
