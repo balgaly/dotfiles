@@ -9,7 +9,7 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
 }
 
 # File/folder icons in directory listings
-if (Get-Module -ListAvailable Terminal-Icons -ErrorAction SilentlyContinue) {
+if (Test-Path "$HOME\Documents\PowerShell\Modules\Terminal-Icons") {
     Import-Module Terminal-Icons
 }
 
