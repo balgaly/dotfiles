@@ -1,0 +1,77 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "background": "#fcee0c",
+          "foreground": "#000000",
+          "template": " ⚠ NETRUNNER "
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#000000",
+          "foreground": "#fcee0c",
+          "properties": { "style": "agnoster_short", "max_depth": 2 },
+          "template": " >> {{ .Path | upper }} "
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#fcee0c",
+          "background_templates": ["{{ if or (.Working.Changed) (.Staging.Changed) }}#ff003c{{ end }}"],
+          "foreground": "#000000",
+          "foreground_templates": ["{{ if or (.Working.Changed) (.Staging.Changed) }}#ffffff{{ end }}"],
+          "template": " [{{ .HEAD }}]{{ if or (.Working.Changed) (.Staging.Changed) }} ALERT{{ end }} ",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "sysinfo",
+          "style": "plain",
+          "foreground": "#fcee0c",
+          "template": "[CPU {{ round .PhysicalPercentUsed .Precision }}%] ",
+          "properties": { "precision": 0 }
+        },
+        {
+          "type": "time",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "invert_powerline": true,
+          "background": "#fcee0c",
+          "foreground": "#000000",
+          "template": " {{ .CurrentDate | date \"15:04\" }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#fcee0c",
+          "foreground_templates": ["{{ if gt .Code 0 }}#ff003c{{ end }}"],
+          "template": "[~]> ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}

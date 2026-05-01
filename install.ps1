@@ -7,7 +7,6 @@
 $ErrorActionPreference = "Stop"
 
 Write-Host "Installing Oh My Posh..." -ForegroundColor Cyan
-# winget may return non-zero even on success; only fail on real errors
 winget install JanDeDobbeleer.OhMyPosh -s winget --accept-package-agreements --accept-source-agreements
 if ($LASTEXITCODE -notin 0, -1978335189) {
     Write-Error "Oh My Posh install failed (exit $LASTEXITCODE)"
@@ -21,10 +20,11 @@ oh-my-posh font install meslo --headless
 Write-Host "Installing PowerShell modules..." -ForegroundColor Cyan
 Install-Module -Name Terminal-Icons -Repository PSGallery -Force -Scope CurrentUser
 
-Write-Host "Copying config files..." -ForegroundColor Cyan
+Write-Host "Setting DOTFILES_ROOT to $PSScriptRoot..." -ForegroundColor Cyan
+[System.Environment]::SetEnvironmentVariable('DOTFILES_ROOT', $PSScriptRoot, 'User')
+$env:DOTFILES_ROOT = $PSScriptRoot
 
-Copy-Item "$PSScriptRoot\ohmyposh.omp.json" "$HOME\.ohmyposh.omp.json" -Force
-
+Write-Host "Installing PowerShell profile..." -ForegroundColor Cyan
 $profileDir = Split-Path $PROFILE
 if (-not (Test-Path $profileDir)) { New-Item -ItemType Directory -Path $profileDir | Out-Null }
 if (Test-Path $PROFILE) {
@@ -34,6 +34,7 @@ if (Test-Path $PROFILE) {
 }
 Copy-Item "$PSScriptRoot\profile.ps1" $PROFILE -Force
 
+Write-Host "Applying Windows Terminal settings..." -ForegroundColor Cyan
 $wtSettingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 if (Test-Path (Split-Path $wtSettingsPath)) {
     Copy-Item "$PSScriptRoot\windows-terminal-settings.json" $wtSettingsPath -Force
@@ -42,4 +43,7 @@ if (Test-Path (Split-Path $wtSettingsPath)) {
     Write-Host "Windows Terminal not found — skipping settings.json." -ForegroundColor Yellow
 }
 
-Write-Host "`nDone! Restart Windows Terminal to see the changes." -ForegroundColor Green
+Write-Host "`nDone!" -ForegroundColor Green
+Write-Host "  Restart Windows Terminal to see the changes."
+Write-Host "  Run 'Set-Theme list' to see all 12 themes."
+Write-Host "  A different one is picked each morning (06:00) and evening (18:00).`n"

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "shell",
+          "style": "diamond",
+          "background": "#1976d2",
+          "foreground": "#ffffff",
+          "leading_diamond": "",
+          "template": "  {{ .Name }} "
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#42a5f5",
+          "foreground": "#ffffff",
+          "properties": { "style": "agnoster_short", "max_depth": 3, "home_icon": "" },
+          "template": "  {{ .Path }} "
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#66bb6a",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#ffa726{{ end }}",
+            "{{ if gt .Ahead 0 }}#ab47bc{{ end }}",
+            "{{ if gt .Behind 0 }}#ef5350{{ end }}"
+          ],
+          "foreground": "#ffffff",
+          "template": "  {{ .HEAD }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }} ",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "command",
+          "style": "diamond",
+          "background": "#ffb300",
+          "foreground": "#000000",
+          "leading_diamond": "",
+          "trailing_diamond": "",
+          "template": " {{ .Output }} ",
+          "properties": {
+            "shell": "pwsh",
+            "command": "try { $w = (Invoke-RestMethod -TimeoutSec 1 'wttr.in/?format=%c%t' -ErrorAction Stop); $w } catch { '' }",
+            "interval": 3600
+          }
+        },
+        {
+          "type": "time",
+          "style": "diamond",
+          "background": "#1976d2",
+          "foreground": "#ffffff",
+          "leading_diamond": " ",
+          "trailing_diamond": "",
+          "template": "  {{ .CurrentDate | date \"Mon Jan 2 · 15:04\" }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#1976d2",
+          "foreground_templates": ["{{ if gt .Code 0 }}#ef5350{{ end }}"],
+          "template": "❯ ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}

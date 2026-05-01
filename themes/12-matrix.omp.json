@@ -1,0 +1,79 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "template": "ツツツ "
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "template": "{{ .UserName }}・"
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "properties": { "style": "agnoster_short", "max_depth": 3 },
+          "template": "{{ .Path }}"
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "template": " ソ{{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}ト{{ end }}",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "sysinfo",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "template": "[シス {{ round .PhysicalPercentUsed .Precision }}%]",
+          "properties": { "precision": 0 }
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "template": " "
+        },
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "template": "[{{ .CurrentDate | date \"15:04:05\" }}]"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#00ff41",
+          "foreground_templates": ["{{ if gt .Code 0 }}#ff003c{{ end }}"],
+          "template": "ツ ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}

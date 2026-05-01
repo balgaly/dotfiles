@@ -1,11 +1,16 @@
-# Oh My Posh prompt
+# Refresh PATH if oh-my-posh isn't found yet (first run after install)
 if (-not (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
-    # Refresh PATH in case oh-my-posh was just installed in this session
     $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" +
                 [System.Environment]::GetEnvironmentVariable("PATH","User")
 }
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-    & ([ScriptBlock]::Create((oh-my-posh init pwsh --config "$HOME\.ohmyposh.omp.json")))
+
+# Load the theme rotator and initialize whichever theme this slot called for.
+# The repo lives wherever you cloned it; default = ~/dotfiles
+$dotfilesRoot = if ($env:DOTFILES_ROOT) { $env:DOTFILES_ROOT } else { "$HOME\dotfiles" }
+$themeLoader  = Join-Path $dotfilesRoot 'theme-loader.ps1'
+if (Test-Path $themeLoader) {
+    . $themeLoader
+    Initialize-Theme
 }
 
 # File/folder icons in directory listings

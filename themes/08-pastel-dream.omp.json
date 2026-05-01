@@ -1,0 +1,86 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "diamond",
+          "background": "#ffb3d9",
+          "foreground": "#5d4858",
+          "leading_diamond": "",
+          "template": " ✧ "
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#c5b3ff",
+          "foreground": "#3d3458",
+          "properties": { "style": "agnoster_short", "max_depth": 3, "home_icon": "♡" },
+          "template": " {{ .Path }} "
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#b3ffd9",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#fff5b3{{ end }}"
+          ],
+          "foreground": "#3d5d4d",
+          "template": " ❦ {{ .HEAD }}{{ if .Working.Changed }} · {{ .Working.String }}{{ end }} ",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "battery",
+          "style": "diamond",
+          "background": "#b3e5ff",
+          "foreground": "#3d4d5d",
+          "leading_diamond": "",
+          "trailing_diamond": "",
+          "template": " {{ .Icon }}{{ .Percentage }}%  ",
+          "properties": {
+            "charged_icon": " ",
+            "charging_icon": " ",
+            "discharging_icon": " "
+          }
+        },
+        {
+          "type": "time",
+          "style": "diamond",
+          "background": "#ffb3d9",
+          "foreground": "#5d4858",
+          "leading_diamond": " ",
+          "trailing_diamond": "",
+          "template": " ✧ {{ .CurrentDate | date \"3:04 PM\" }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#c5b3ff",
+          "foreground_templates": ["{{ if gt .Code 0 }}#ff9eb5{{ end }}"],
+          "template": "✿  ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#d4a574",
+          "foreground": "#3d2817",
+          "template": " ◈ "
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#a67b5b",
+          "foreground": "#f4e4d0",
+          "properties": { "style": "agnoster_short", "max_depth": 3, "home_icon": "◇" },
+          "template": " {{ .Path }} "
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#7a5c3e",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#b85c4a{{ end }}"
+          ],
+          "foreground": "#f4e4d0",
+          "template": " ◆ {{ .HEAD }}{{ if .Working.Changed }} ●{{ end }} ",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "time",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "invert_powerline": true,
+          "background": "#d4a574",
+          "foreground": "#3d2817",
+          "template": " ◇ {{ .CurrentDate | date \"15:04\" }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#a67b5b",
+          "foreground_templates": ["{{ if gt .Code 0 }}#b85c4a{{ end }}"],
+          "template": "◄ ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}

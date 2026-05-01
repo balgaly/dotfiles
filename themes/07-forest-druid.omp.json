@@ -1,0 +1,86 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "diamond",
+          "background": "#3d5a3a",
+          "foreground": "#d4e09b",
+          "leading_diamond": "",
+          "template": "  "
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#5d8a4f",
+          "foreground": "#1c2a1a",
+          "properties": { "style": "agnoster_short", "max_depth": 3, "home_icon": "" },
+          "template": " {{ .Path }} "
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#8b6f47",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#c97e4a{{ end }}"
+          ],
+          "foreground": "#f4e4c1",
+          "template": "  {{ .HEAD }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }} ",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "command",
+          "style": "diamond",
+          "background": "#5d8a4f",
+          "foreground": "#1c2a1a",
+          "leading_diamond": "",
+          "trailing_diamond": "",
+          "template": " {{ .Output }} ",
+          "properties": {
+            "shell": "pwsh",
+            "command": "$d=(Get-Date); $age=($d - (Get-Date '2000-01-06')).TotalDays % 29.530588853; $i=[Math]::Floor($age / 29.530588853 * 8); $m=@('','','','','','','',''); $m[$i]",
+            "interval": 86400
+          }
+        },
+        {
+          "type": "time",
+          "style": "diamond",
+          "background": "#3d5a3a",
+          "foreground": "#d4e09b",
+          "leading_diamond": " ",
+          "trailing_diamond": "",
+          "template": " {{ .CurrentDate | date \"Mon · 15:04\" }} "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#a4c2a8",
+          "foreground_templates": ["{{ if gt .Code 0 }}#c97e4a{{ end }}"],
+          "template": "❧ ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "template": "["
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "template": "{{ .UserName }}@{{ .HostName }}"
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "template": " "
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "properties": { "style": "agnoster_short", "max_depth": 2 },
+          "template": "{{ .Path }}"
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "template": "]"
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "template": "({{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }})",
+          "properties": { "fetch_status": true }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "template": "{{ .CurrentDate | date \"15:04:05\" }}"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#33ff33",
+          "foreground_templates": ["{{ if gt .Code 0 }}#ff3333{{ end }}"],
+          "template": "$ ",
+          "properties": { "always_enabled": true }
+        }
+      ]
+    }
+  ]
+}
