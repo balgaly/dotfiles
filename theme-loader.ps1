@@ -43,22 +43,20 @@ function Write-State($state) {
 
 function Resolve-ThemeForThisShell {
     $state = Read-State
-    $slot  = Get-CurrentSlot
 
     # Manual override wins
     if ($state.override) {
         return $state.override
     }
 
-    # Same slot as last time? Reuse the locked-in pick
-    if ($state.slot -eq $slot -and $state.theme) {
-        return $state.theme
-    }
-
-    # New slot — pick a fresh random theme from the appropriate pool
+    # Otherwise: roll a fresh theme on every shell open, from the current
+    # time-of-day pool. Avoid picking the same one twice in a row.
     $pool = Get-PoolForCurrentSlot
+    if ($state.theme -and $pool.Count -gt 1) {
+        $pool = $pool | Where-Object { $_ -ne $state.theme }
+    }
     $pick = $pool | Get-Random
-    Write-State @{ slot = $slot; theme = $pick }
+    Write-State @{ theme = $pick }
     $pick
 }
 
@@ -90,7 +88,6 @@ function Set-Theme {
         'random' {
             $state.Remove('override') | Out-Null
             $pick = (Get-PoolForCurrentSlot) | Get-Random
-            $state.slot = Get-CurrentSlot
             $state.theme = $pick
             Write-Host "Rolled: $pick" -ForegroundColor Green
         }

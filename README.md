@@ -1,6 +1,6 @@
 # dotfiles
 
-> Windows Terminal setup with **12 hand-crafted themes** that auto-rotate twice a day so your prompt never feels stale. One in the morning, a different one at night, all from artists with very different visions.
+> Windows Terminal setup with **12 hand-crafted themes** that re-roll on every new tab — light themes during the day, dark ones at night, all from artists with very different visions.
 
 ![Terminal Preview](screenshots/preview.png)
 
@@ -8,12 +8,12 @@
 
 ## How the rotation works
 
-| Time | Pool | What happens |
-|---|---|---|
-| **06:00 – 17:59** | 4 light themes | A random light theme is picked at 06:00 and stays all morning |
-| **18:00 – 05:59** | 8 dark themes | A random dark theme is picked at 18:00 and stays all evening |
+| Time | Pool |
+|---|---|
+| **06:00 – 17:59** | 4 light themes — a fresh random one each new tab |
+| **18:00 – 05:59** | 8 dark themes — a fresh random one each new tab |
 
-The pick is locked into a "slot" — opening 50 new tabs in the same morning all show the same theme. At 06:00 and 18:00, the next slot rolls a fresh one.
+Same theme will never appear twice in a row. Want it sticky? Pin one with `Set-Theme <name>`.
 
 Override anytime:
 
