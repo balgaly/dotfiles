@@ -1,49 +1,41 @@
 # dotfiles
 
-Windows Terminal configuration with a custom prompt, icons, and visual effects.
+> Windows Terminal setup with a custom prompt, file icons, predictive IntelliSense, and acrylic transparency.
 
-## Before & After
-
-**Before** — plain default terminal:
-
-![Before](screenshots/before.png)
-
-**After** — fully pimped:
-
-![After](screenshots/after.png)
+![Terminal Preview](screenshots/preview.png)
 
 ---
 
-## What's included
+## Stack
 
-| File | Purpose |
+| Tool | Purpose |
 |---|---|
-| `ohmyposh.omp.json` | Oh My Posh theme (atomic) |
-| `profile.ps1` | PowerShell profile — loads prompt, icons, IntelliSense |
-| `windows-terminal-settings.json` | Windows Terminal — font, transparency, color scheme |
-| `install.ps1` | One-shot setup script |
+| [Oh My Posh](https://ohmyposh.dev) | Custom prompt engine |
+| [MesloLGLDZ Nerd Font](https://www.nerdfonts.com) | Font with developer icons |
+| [Terminal-Icons](https://github.com/devblackops/Terminal-Icons) | File & folder icons in `ls` |
+| [PSReadLine](https://github.com/PowerShell/PSReadLine) | History-based IntelliSense |
 
 ---
 
-## What the prompt shows
+## Prompt breakdown
 
 **Left side**
 
-| Segment | Color | Meaning |
+| Segment | Color | Shows |
 |---|---|---|
-| `pwsh` | Blue | Shell name |
-| `→ 🏠 / folder` | Orange | Current directory (`🏠` = home, folder name otherwise) |
-| `⊡ 0ms` | Purple | Execution time of the last command (hidden under 1ms) |
-| Branch + status | Yellow | Git branch, dirty/ahead/behind indicators (only inside git repos) |
+| `pwsh` | Blue | Current shell |
+| `→ 🏠` / folder name | Orange | Working directory (`🏠` = home) |
+| `⊡ 1.2s` | Purple | Last command execution time |
+| Branch + status | Yellow | Git branch, dirty/ahead/behind state (git repos only) |
 
 **Right side**
 
-| Segment | Meaning |
+| Segment | Shows |
 |---|---|
 | Windows logo | OS indicator |
-| `Thu 01 May 10:18` | Day of week, date, month, and current time |
+| `Thu 01 May 10:18` | Day · date · month · time |
 
-The `>>` on the second line is the input cursor — it turns **red** if the last command failed.
+The `>>` input line turns **red** on a non-zero exit code.
 
 ---
 
@@ -51,43 +43,25 @@ The `>>` on the second line is the input cursor — it turns **red** if the last
 
 - [Windows Terminal](https://aka.ms/terminal)
 - [PowerShell 7+](https://aka.ms/powershell)
-- [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (comes with Windows 11 / Windows 10 1809+)
-- A GitHub account (optional, only needed to clone via git)
+- winget (included with Windows 10 1809+ / Windows 11)
 
 ---
 
-## Installation
-
-### 1. Clone the repo
+## Install
 
 ```powershell
+# 1. Install git if you don't have it
+winget install Git.Git --accept-package-agreements --accept-source-agreements
+
+# 2. Clone and run
 git clone https://github.com/balgaly/dotfiles
 cd dotfiles
-```
-
-> If git isn't installed yet:
-> ```powershell
-> winget install Git.Git --accept-package-agreements --accept-source-agreements
-> ```
-> Then open a new terminal and retry.
-
-### 2. Run the install script
-
-```powershell
 .\install.ps1
+
+# 3. Restart Windows Terminal
 ```
 
-This will:
-1. Install **Oh My Posh** (custom prompt engine)
-2. Install **MesloLGLDZ Nerd Font** (required for icons)
-3. Install **Terminal-Icons** PowerShell module (file/folder icons in `ls`)
-4. Copy `ohmyposh.omp.json` → `~\.ohmyposh.omp.json`
-5. Copy `profile.ps1` → your PowerShell profile
-6. Copy `windows-terminal-settings.json` → Windows Terminal settings (if installed)
-
-### 3. Restart Windows Terminal
-
-Close and reopen Windows Terminal. The styled prompt will appear immediately.
+The script installs Oh My Posh, the Nerd Font, and Terminal-Icons, then copies all config files to the right locations automatically.
 
 ---
 
@@ -96,40 +70,30 @@ Close and reopen Windows Terminal. The styled prompt will appear immediately.
 | Shortcut | Action |
 |---|---|
 | `Ctrl+Shift+T` | New tab |
-| `Ctrl+Shift+W` | Close current pane |
+| `Ctrl+Shift+W` | Close pane |
 | `Alt+Shift+D` | Split pane |
-| `Tab` | Menu-style autocomplete |
+| `Tab` | Menu autocomplete |
 | `↑` / `↓` | Search command history |
 
 ---
 
 ## Customization
 
-### Change the prompt theme
-
-Browse themes at [ohmyposh.dev/docs/themes](https://ohmyposh.dev/docs/themes), then download one:
+**Swap the prompt theme** — browse at [ohmyposh.dev/docs/themes](https://ohmyposh.dev/docs/themes):
 
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/THEME_NAME.omp.json" -OutFile "$HOME\.ohmyposh.omp.json"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/THEME.omp.json" -OutFile "$HOME\.ohmyposh.omp.json"
 ```
 
-### Change the date format
+**Change the date format** — edit `ohmyposh.omp.json`, find `time_format`. Uses Go time syntax:
 
-Edit `ohmyposh.omp.json` and find `time_format`. Uses Go time format syntax:
-
-```json
-"time_format": "Mon 02 Jan 15:04"
+```
+Mon 02 Jan 15:04   →   Thu 01 May 10:18
 ```
 
-Common tokens: `Mon` (3-letter day), `02` (day), `Jan` (3-letter month), `2006` (year), `15:04` (24h time), `3:04 PM` (12h time).
-
-### Change transparency
-
-Edit `windows-terminal-settings.json`:
+**Adjust transparency** — edit `windows-terminal-settings.json`:
 
 ```json
 "opacity": 85,
 "useAcrylic": true
 ```
-
-`opacity` ranges from `0` (fully transparent) to `100` (solid).
