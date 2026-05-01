@@ -7,11 +7,10 @@ $repo = $PSScriptRoot
 Write-Host "Syncing live config files into repo..." -ForegroundColor Cyan
 
 Copy-Item $PROFILE "$repo\profile.ps1" -Force
-Copy-Item "$HOME\.ohmyposh.omp.json" "$repo\ohmyposh.omp.json" -Force
 Copy-Item "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$repo\windows-terminal-settings.json" -Force
 
 Set-Location $repo
-git add profile.ps1 ohmyposh.omp.json windows-terminal-settings.json
+git add profile.ps1 windows-terminal-settings.json themes/ theme-loader.ps1
 
 $status = git status --porcelain
 if (-not $status) {

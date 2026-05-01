@@ -1,12 +1,10 @@
-# Selects an Oh My Posh theme based on time of day, with manual override.
+# Selects an Oh My Posh theme on every new shell.
 #
-# - Daytime (06:00–17:59) -> random light theme
-# - Evening (18:00–05:59) -> random dark theme
-# - The choice is locked into a "slot" (morning / evening of a given date),
-#   so the theme only changes twice a day, not on every new shell.
-# - Override anytime with: Set-Theme <name>   (use Set-Theme list to see them)
-#                          Set-Theme random   (re-roll within current slot)
-#                          Set-Theme auto     (clear override)
+# - 06:00–17:59 -> a random light theme
+# - 18:00–05:59 -> a random dark theme
+# - Never picks the same theme twice in a row
+# - Override anytime with: Set-Theme <name>   (Set-Theme list to see them)
+#                          Set-Theme auto     (clear pin)
 
 $script:ThemesDir   = Join-Path $PSScriptRoot 'themes'
 $script:StateFile   = Join-Path $HOME '.terminal-theme'
@@ -15,21 +13,9 @@ $script:LightThemes = @('04-notebook', '05-material-light', '08-pastel-dream', '
 $script:DarkThemes  = @('01-brutalist', '02-synthwave', '03-tokyo-night', '06-cyberpunk',
                         '07-forest-druid', '09-vt100', '10-glassmorphism', '12-matrix')
 
-function Get-CurrentSlot {
-    $now = Get-Date
-    $slot = if ($now.Hour -ge 6 -and $now.Hour -lt 18) { 'morning' } else { 'evening' }
-    # Evening that starts before midnight stays "evening of date X" until 06:00 next day
-    $slotDate = if ($slot -eq 'evening' -and $now.Hour -lt 6) {
-        $now.AddDays(-1).ToString('yyyy-MM-dd')
-    } else {
-        $now.ToString('yyyy-MM-dd')
-    }
-    "$slotDate-$slot"
-}
-
 function Get-PoolForCurrentSlot {
-    $now = Get-Date
-    if ($now.Hour -ge 6 -and $now.Hour -lt 18) { $script:LightThemes } else { $script:DarkThemes }
+    $h = (Get-Date).Hour
+    if ($h -ge 6 -and $h -lt 18) { $script:LightThemes } else { $script:DarkThemes }
 }
 
 function Read-State {
@@ -38,19 +24,15 @@ function Read-State {
 }
 
 function Write-State($state) {
-    $state | ConvertTo-Json | Set-Content $script:StateFile
+    # Profile must never throw — a locked/full disk shouldn't break shell startup
+    try { $state | ConvertTo-Json | Set-Content $script:StateFile -ErrorAction Stop } catch { }
 }
 
 function Resolve-ThemeForThisShell {
     $state = Read-State
 
-    # Manual override wins
-    if ($state.override) {
-        return $state.override
-    }
+    if ($state.override) { return $state.override }
 
-    # Otherwise: roll a fresh theme on every shell open, from the current
-    # time-of-day pool. Avoid picking the same one twice in a row.
     $pool = Get-PoolForCurrentSlot
     if ($state.theme -and $pool.Count -gt 1) {
         $pool = $pool | Where-Object { $_ -ne $state.theme }
@@ -76,33 +58,27 @@ function Set-Theme {
         $script:DarkThemes  | ForEach-Object { Write-Host "  $_" }
         Write-Host "`nUsage:" -ForegroundColor Gray
         Write-Host "  Set-Theme <name>   pin a specific theme"
-        Write-Host "  Set-Theme random   re-roll within current slot"
-        Write-Host "  Set-Theme auto     clear pin, return to time-based rotation`n"
+        Write-Host "  Set-Theme auto     clear pin, return to random rotation`n"
         return
     }
 
     $state = Read-State
 
-    switch ($Name) {
-        'auto'   { $state.Remove('override') | Out-Null ; Write-Host "Auto-rotation re-enabled." -ForegroundColor Green }
-        'random' {
-            $state.Remove('override') | Out-Null
-            $pick = (Get-PoolForCurrentSlot) | Get-Random
-            $state.theme = $pick
-            Write-Host "Rolled: $pick" -ForegroundColor Green
-        }
-        default {
-            if (-not (Get-ThemePath $Name)) {
-                Write-Host "Unknown theme: $Name. Try 'Set-Theme list'." -ForegroundColor Red
-                return
-            }
-            $state.override = $Name
-            Write-Host "Pinned: $Name. Open a new shell to see it." -ForegroundColor Green
-        }
+    if ($Name -eq 'auto') {
+        $state.Remove('override') | Out-Null
+        Write-State $state
+        Write-Host "Auto-rotation re-enabled. Open a new tab to roll a fresh theme." -ForegroundColor Green
+        return
     }
 
+    if (-not (Get-ThemePath $Name)) {
+        Write-Host "Unknown theme: $Name. Try 'Set-Theme list'." -ForegroundColor Red
+        return
+    }
+
+    $state.override = $Name
     Write-State $state
-    Write-Host "(Restart your shell or run . `$PROFILE to apply.)" -ForegroundColor Gray
+    Write-Host "Pinned: $Name. Open a new tab to see it." -ForegroundColor Green
 }
 
 function Initialize-Theme {

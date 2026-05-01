@@ -20,8 +20,7 @@ Override anytime:
 ```powershell
 Set-Theme list             # show all 12
 Set-Theme 02-synthwave     # pin a specific theme
-Set-Theme random           # re-roll within the current slot's pool
-Set-Theme auto             # clear pin, return to time-based rotation
+Set-Theme auto             # clear pin, return to random rotation
 ```
 
 ---
@@ -93,8 +92,7 @@ The installer:
 |---|---|
 | `Set-Theme list` | Show all 12 themes grouped by light/dark |
 | `Set-Theme <name>` | Pin one (overrides rotation until you say `auto`) |
-| `Set-Theme random` | Re-roll a different theme in the current slot |
-| `Set-Theme auto` | Clear the pin, go back to time-based rotation |
+| `Set-Theme auto` | Clear the pin, go back to random rotation |
 | `.\update.ps1` | Sync your live config back into the repo and push |
 
 ---
